@@ -1,0 +1,33 @@
+<html lang="en">
+    <head>
+        <title>Random Playlist Genrator</title>
+    </head>
+    <body>
+        <h1>Random Playlist Generator</h1>
+
+        <p>Generate a random playlist, based on your followed artists.</p>
+
+        <p>After click on <strong>Create</strong> you are forced to login with your spotify account, the token is only used for one time generation.</p>
+
+        <form action="generate.php" method="post">
+            <label for="playlistName">Playlistname</label>
+            <input id="playlistName" name="playlistName" value="random playlist">
+            <br/>
+            <label for="trackAmount">Amount of tracks</label>
+            <select id="trackAmount" name="trackAmount">
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="300">300</option>
+                <option value="400">400</option>
+                <option value="500">500</option>
+                <option value="600">600</option>
+                <option value="700">700</option>
+                <option value="800">800</option>
+                <option value="900">900</option>
+                <option value="1000">1000</option>
+            </select>
+            <br/>
+            <button type="submit">Create</button>
+        </form>
+    </body>
+</html>

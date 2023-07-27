@@ -1,0 +1,9 @@
+{
+  "require": {
+    "php": "^8.1",
+    "ext-pdo": "*",
+    "ext-curl": "*",
+    "jwilsson/spotify-web-api-php": "*",
+    "vlucas/phpdotenv": "5.4.*"
+  }
+}
