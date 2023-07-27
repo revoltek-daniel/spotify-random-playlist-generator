@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "da98e72eeb100352c6b477eb45413bae",
+    "content-hash": "c27ffee9813a39a2c9499f8ea88a2c47",
     "packages": [
         {
             "name": "graham-campbell/result-type",
@@ -70,17 +70,11 @@
         },
         {
             "name": "jwilsson/spotify-web-api-php",
-            "version": "5.6.0",
+            "version": "dev-bugfix/fix-create-playlist-endpoint",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jwilsson/spotify-web-api-php.git",
-                "reference": "ecbe3e676f287675aef733e205a440c85658d765"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jwilsson/spotify-web-api-php/zipball/ecbe3e676f287675aef733e205a440c85658d765",
-                "reference": "ecbe3e676f287675aef733e205a440c85658d765",
-                "shasum": ""
+                "url": "git@github.com:revoltek-daniel/spotify-web-api-php.git",
+                "reference": "40c091b90c5c3834ae13973362ede54bfd721a4f"
             },
             "require": {
                 "ext-curl": "*",
@@ -97,7 +91,11 @@
                     "SpotifyWebAPI\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "test": [
+                    "phpcs src -v && phpunit"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -112,11 +110,7 @@
             "keywords": [
                 "spotify"
             ],
-            "support": {
-                "issues": "https://github.com/jwilsson/spotify-web-api-php/issues",
-                "source": "https://github.com/jwilsson/spotify-web-api-php/tree/5.6.0"
-            },
-            "time": "2023-02-11T18:23:56+00:00"
+            "time": "2023-07-27T15:15:49+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -525,7 +519,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "jwilsson/spotify-web-api-php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

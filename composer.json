@@ -1,9 +1,15 @@
 {
+  "repositories": [
+    {
+      "type": "git",
+      "url": "git@github.com:revoltek-daniel/spotify-web-api-php.git"
+    }
+  ],
   "require": {
     "php": "^8.1",
     "ext-pdo": "*",
     "ext-curl": "*",
-    "jwilsson/spotify-web-api-php": "*",
+    "jwilsson/spotify-web-api-php": "dev-bugfix/fix-create-playlist-endpoint",
     "vlucas/phpdotenv": "5.4.*"
   }
 }
