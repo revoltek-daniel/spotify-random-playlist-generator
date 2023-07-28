@@ -132,25 +132,35 @@ if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
                 $trackIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 shuffle($trackIds);
 
-                $tracksToAdd = [];
-                do {
-                    $index = random_int(0, count($trackIds) - 1);
-                    if (isset($trackIds[$index]) === false || isset($insertedTracks[$index])) {
-                        continue;
-                    }
+                if (count($trackIds) < 100) {
+                    $tracksToAdd = $trackIds;
+                    echo 'not enough tracks to add, only ' .count($trackIds). ' found<br>';
+                } else {
+                    $tracksToAdd = [];
+                    do {
+                        $index = random_int(0, count($trackIds) - 1);
 
-                    $tracksToAdd[] = $trackIds[$index];
-                    $insertedTracks[$trackIds[$index]] = $trackIds[$index];
-                    unset($trackIds[$index]);
-                } while (count($tracksToAdd) < 100);
+                        if (isset($trackIds[$index]) === false || isset($insertedTracks[$index])) {
+                            continue;
+                        }
+
+                        $tracksToAdd[] = $trackIds[$index];
+                        $insertedTracks[$trackIds[$index]] = $trackIds[$index];
+                        unset($trackIds[$index]);
+                    } while (count($tracksToAdd) < 100);
+                }
 
                 $api->addPlaylistTracks($playlistId, $tracksToAdd);
+
+                if (count($tracksToAdd) < 100) {
+                    break;
+                }
             }
 
             echo 'Playlist created <a target="_blank" href="https://open.spotify.com/playlist/' . $playlistId . '">' . $playlistId . '</a></br>';
 
         } catch (\SpotifyWebAPI\SpotifyWebAPIException $e) {
-            echo $e->getMessage();
+            echo 'Error: '. $e->getMessage();
 
             if ($e->isRateLimited()) {
                 $headers = $api->getRequest()->getLastResponse()['headers'];
