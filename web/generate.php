@@ -53,7 +53,7 @@ if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
             ob_flush();
             $artistIds = [];
             $options = ['limit' => 50];
-            $stmt = $db->prepare('INSERT IGNORE INTO artists (id, name) VALUES (?, ?)');
+            $stmt = $db->prepare('INSERT IGNORE INTO artists (id, name, last_refresh) VALUES (?, ?, CURRENT_TIME())');
             do {
                 $artists = $api->getUserFollowedArtists($options);
 
