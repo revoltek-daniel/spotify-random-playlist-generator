@@ -25,7 +25,8 @@ $stmt = $db->prepare('
                     SELECT artists.id AS id 
                     FROM artists 
                     WHERE last_refresh is null OR last_refresh < FROM_UNIXTIME(?) 
-                    LIMIT 50
+                    ORDER BY RAND()
+                    LIMIT 150
                     '
 );
 
