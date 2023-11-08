@@ -123,7 +123,7 @@ if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
                 'SELECT tracks.id 
                            FROM tracks 
                                LEFT JOIN albums ON tracks.album = albums.id 
-                           WHERE albums.artist IN (' . implode(',', array_fill(0, count($artistIds), '?')) . ') 
+                           WHERE albums.podcast = 0 AND albums.artist IN (' . implode(',', array_fill(0, count($artistIds), '?')) . ') 
                     ORDER BY RAND() LIMIT 1000 ');
 
             $insertedTracks = [];

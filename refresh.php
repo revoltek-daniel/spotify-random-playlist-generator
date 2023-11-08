@@ -24,7 +24,7 @@ $db = new PDO($_ENV['DATABASE_DSN'], $_ENV['DATABASE_USERNAME'], $_ENV['DATABASE
 $stmt = $db->prepare('
                     SELECT artists.id AS id 
                     FROM artists 
-                    WHERE last_refresh is null OR last_refresh < FROM_UNIXTIME(?) 
+                    WHERE podcast = 0 AND (last_refresh is null OR last_refresh < FROM_UNIXTIME(?))
                     ORDER BY RAND()
                     LIMIT 150
                     '

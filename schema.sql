@@ -2,6 +2,7 @@ create table artists
 (
     id           varchar(255) not null,
     name         varchar(255) null,
+    podcast      tinyint(1) default 0 null,
     last_refresh datetime     null on update CURRENT_TIMESTAMP,
     constraint artists_id_uindex
         unique (id)
@@ -12,6 +13,7 @@ create table albums
     id     varchar(255) null,
     name   varchar(255) null,
     artist varchar(255) null,
+    podcast      tinyint(1) default 0 null,
     constraint albums_id_uindex
         unique (id),
     constraint albums_artists_id_fk
