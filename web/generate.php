@@ -30,7 +30,7 @@ if (isset($_POST['playlistName'], $_POST['trackAmount'])) {
 
 if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
     ?>
-    <html>
+    <html lang="de">
     <head>
         <title>Generate Playlist</title>
     </head>
@@ -65,7 +65,7 @@ if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
                     }
                     $options['after'] = end($artistIds);
                 } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
-                    echo $e->getMessage(). '<br/>';
+                    echo $e->getCode() . ' ' . $e->getMessage(). '<br/>';
                 }
             } while (count($artistIds) % 50 === 0);
 
@@ -94,7 +94,7 @@ if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
                             $stmt->execute([$album->id, $album->name, $artistId]);
                         }
                     } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
-                        echo $e->getMessage() . '<br/>';
+                        echo $e->getCode() . ' ' . $e->getMessage() . '<br/>';
                     }
                 }
 
@@ -110,13 +110,17 @@ if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
                 ob_flush();
                 $stmt = $db->prepare('INSERT IGNORE INTO tracks (id, name, album) VALUES (?, ?, ?)');
                 foreach ($albumIds as $key => $albumId) {
-                    $albumTracks = $api->getAlbumTracks($albumId, ['limit' => 50]);
-                    foreach ($albumTracks->items as $track) {
-                        if (isset($track->available_markets) && count($track->available_markets) === 0) {
-                            continue;
-                        }
+                    try {
+                        $albumTracks = $api->getAlbumTracks($albumId, ['limit' => 50]);
+                        foreach ($albumTracks->items as $track) {
+                            if (isset($track->available_markets) && count($track->available_markets) === 0) {
+                                continue;
+                            }
 
-                        $stmt->execute([$track->id, $track->name, $albumId]);
+                            $stmt->execute([$track->id, $track->name, $albumId]);
+                        }
+                    } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
+                        echo $e->getCode() . ' ' . $e->getMessage(). '<br/>';
                     }
                 }
             }
