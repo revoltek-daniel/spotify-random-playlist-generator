@@ -39,15 +39,23 @@ if (count($artistsToRefresh) === 0) {
 
 $stmt = $db->prepare('INSERT IGNORE INTO albums (id, name, artist) VALUES (?, ?, ?)');
 $artistUpdateStmt = $db->prepare('UPDATE artists SET last_refresh = CURRENT_TIME() WHERE id = ?');
-foreach ($artistsToRefresh as $artistId) {
-    $albums = $api->getArtistAlbums($artistId, ['limit' => 50, 'include_groups' => 'album']);
+foreach ($artistsToRefresh as $key => $artistId) {
+    try {
+        $albums = $api->getArtistAlbums($artistId, ['limit' => 50, 'include_groups' => 'album']);
 
-    foreach ($albums->items as $album) {
-        $stmt->execute([$album->id, $album->name, $artistId]);
+        foreach ($albums->items as $album) {
+            $stmt->execute([$album->id, $album->name, $artistId]);
+        }
+
+        $artistUpdateStmt->execute([$artistId]);
+    } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
+        echo 'error getting albums ' . $artistId . "\r\n";
+        echo $e->getMessage() . "\r\n";
+        unset($artistsToRefresh[$key]);
     }
-
-    $artistUpdateStmt->execute([$artistId]);
 }
+
+$artistsToRefresh = array_values($artistsToRefresh);
 
 unset($albums);
 
@@ -56,16 +64,21 @@ $stmt->execute($artistsToRefresh);
 $albumIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
 if (count($albumIds)) {
-    echo 'getting tracks<br/>';
+    echo 'getting tracks' . "\r\n";
     $stmt = $db->prepare('INSERT IGNORE INTO tracks (id, name, album) VALUES (?, ?, ?)');
     foreach ($albumIds as $key => $albumId) {
-        $albumTracks = $api->getAlbumTracks($albumId, ['limit' => 50]);
-        foreach ($albumTracks->items as $track) {
-            if (isset($track->available_markets) && count($track->available_markets) === 0) {
-                continue;
-            }
+        try {
+            $albumTracks = $api->getAlbumTracks($albumId, ['limit' => 50]);
+            foreach ($albumTracks->items as $track) {
+                if (isset($track->available_markets) && count($track->available_markets) === 0) {
+                    continue;
+                }
 
-            $stmt->execute([$track->id, $track->name, $albumId]);
+                $stmt->execute([$track->id, $track->name, $albumId]);
+            }
+        } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
+            echo 'error on getting tracks for album ' . $albumId . "\r\n";
+            echo $e->getMessage() . "\r\n";
         }
     }
 }

@@ -55,14 +55,18 @@ if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
             $options = ['limit' => 50];
             $stmt = $db->prepare('INSERT IGNORE INTO artists (id, name, last_refresh) VALUES (?, ?, CURRENT_TIME())');
             do {
-                $artists = $api->getUserFollowedArtists($options);
+                try {
+                    $artists = $api->getUserFollowedArtists($options);
 
-                foreach ($artists->artists->items as $artist) {
-                    $artistIds[] = $artist->id;
+                    foreach ($artists->artists->items as $artist) {
+                        $artistIds[] = $artist->id;
 
-                    $stmt->execute([$artist->id, $artist->name]);
+                        $stmt->execute([$artist->id, $artist->name]);
+                    }
+                    $options['after'] = end($artistIds);
+                } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
+                    echo $e->getMessage(). '<br/>';
                 }
-                $options['after'] = end($artistIds);
             } while (count($artistIds) % 50 === 0);
 
             unset($artists);
@@ -83,10 +87,14 @@ if (isset($_GET['code'], $_SESSION['playlistName'], $_SESSION['trackAmount'])) {
 
                 $stmt = $db->prepare('INSERT IGNORE INTO albums (id, name, artist) VALUES (?, ?, ?)');
                 foreach ($artistIdsWithoutAlbums as $artistId) {
-                    $albums = $api->getArtistAlbums($artistId, ['limit' => 50, 'include_groups' => 'album']);
+                    try {
+                        $albums = $api->getArtistAlbums($artistId, ['limit' => 50, 'include_groups' => 'album']);
 
-                    foreach ($albums->items as $album) {
-                        $stmt->execute([$album->id, $album->name, $artistId]);
+                        foreach ($albums->items as $album) {
+                            $stmt->execute([$album->id, $album->name, $artistId]);
+                        }
+                    } catch (SpotifyWebAPI\SpotifyWebAPIException $e) {
+                        echo $e->getMessage() . '<br/>';
                     }
                 }
 
