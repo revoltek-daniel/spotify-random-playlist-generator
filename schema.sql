@@ -3,6 +3,7 @@ create table artists
     id           varchar(255) not null,
     name         varchar(255) null,
     podcast      tinyint(1) default 0 null,
+    genre        text not null default '',
     last_refresh datetime     null on update CURRENT_TIMESTAMP,
     constraint artists_id_uindex
         unique (id)
